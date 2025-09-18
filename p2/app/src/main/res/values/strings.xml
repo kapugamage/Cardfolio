@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">cardfolio</string>
+    <string name="card_name">Your Name</string>
+    <string name="card_hobby">Add a hobby</string>
+    <string name="card_name_label">Name</string>
+    <string name="card_hobby_label">Hobby</string>
+    <string name="card_age_label">Age</string>
 </resources>
