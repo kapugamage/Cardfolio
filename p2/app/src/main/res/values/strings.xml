@@ -10,4 +10,5 @@
     <string name="button_show">Show</string>
     <string name="chip_editing">Editing</string>
     <string name="chip_locked">Locked</string>
+    <string name="toast_saved">Saved successfully!</string>
 </resources>

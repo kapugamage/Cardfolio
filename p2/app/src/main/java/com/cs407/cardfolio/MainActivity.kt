@@ -1,7 +1,7 @@
-// app/src/main/java/com/cs407/cardfolio/MainActivity.kt
 package com.cs407.cardfolio
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -18,17 +18,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -90,6 +81,8 @@ fun Cardfolio() {
     var age by remember { mutableStateOf("") }
     var isEditing by remember { mutableStateOf(true) }
 
+    val context = LocalContext.current
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -107,7 +100,7 @@ fun Cardfolio() {
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
 
-                // 2.5 AssistChip at the top-right of the card
+                // Editing/Locked AssistChip
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -203,7 +196,7 @@ fun Cardfolio() {
                     )
                 }
 
-                // 2.6 Buttons row aligned to end with spacing
+                // Buttons row aligned to end
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -222,9 +215,28 @@ fun Cardfolio() {
                     Spacer(modifier = Modifier.width(12.dp))
                     Button(
                         onClick = {
-                            // lock only if all fields are filled (missing-field handling in Milestone 3)
-                            if (name.isNotBlank() && hobby.isNotBlank() && age.isNotBlank()) {
+                            // Validate inputs and show appropriate Toast
+                            val missing = buildList {
+                                if (name.isBlank()) add("Name")
+                                if (hobby.isBlank()) add("Hobby")
+                                if (age.isBlank()) add("Age")
+                            }
+
+                            if (missing.isNotEmpty()) {
+                                val msg = "Please fill: " + when (missing.size) {
+                                    1 -> missing[0]
+                                    2 -> "${missing[0]} and ${missing[1]}"
+                                    else -> missing.dropLast(1).joinToString(", ") + ", and " + missing.last()
+                                }
+                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                            } else {
                                 isEditing = false
+                                // Use context.getString(...) here (NOT stringResource)
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.toast_saved),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         },
                         enabled = isEditing
